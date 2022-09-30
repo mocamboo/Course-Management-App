@@ -1,30 +1,32 @@
 <template>
-    <div  class="slds-card myclass slds-var-p-around_small">
-        <template if:true={result} class="yclass">
-            <div class="slds-grid slds-wrap">
-                <template
-                    for:each={result.records}
-                    for:item="itr"
-                >
-                <li class="yclass" key={itr.Id}> {itr.Name}</li>
-                
-                  
-                </template>
-            </div>
-              
-            <c-paginator
-                page-number={pageNumber}
-                page-size={pageSize}
-                total-item-count={result.totalItemCount}
-                onprevious={handlePreviousPage}
-                onnext={handleNextPage}
-            ></c-paginator>
-        </template>
-        <!-- <template if:true={properties.error}>
-            <c-error-panel
-                friendly-message="Error retrieving data"
-                errors={properties.error}
-            ></c-error-panel>
-        </template> -->
-    </div>
+	
+	<template if:true={result} >
+		<div class="slds-card slds-grid slds-wrap myclass">
+			<template for:each={courses} for:item="course">
+				<c-course-tile 
+					key={course.Id}
+					course={course}
+					onaddcourse={handleCourseAdd} 
+					ondeletecourse={handleCourseDelete} 
+					oncheckadd={handleCheckAdd} 
+					isdisabled={course.isAdded} 
+					data-id={course.Id}  
+					class="slds-col slds-size_4-of-12 slds-align_absolute-center slds-box course-tile">
+				</c-course-tile>
+			</template>
+		</div>
+		<c-paginator 
+			page-number={pageNumber} 
+			page-size={pageSize} 
+			total-item-count={result.totalItemCount}
+			onprevious={handlePreviousPage} 
+			onnext={handleNextPage}>
+		</c-paginator>
+	</template>
+	<c-coursera-footer 
+		ongotocart={handleGotoCart} 
+		addeditems={addedItems} 
+		totalamount={totalPrice} 
+		class=" slds-align_absolute-center">
+	</c-coursera-footer>
 </template>

@@ -17,56 +17,83 @@ public class courseraLwcController {
         Integer pageSize,
         Integer pageNumber
     ) {
-        // Normalize inputs
-        Decimal safeMaxPrice = (maxPrice == null
-            ? DEFAULT_MAX_PRICE
-            : maxPrice);
-        
-        Integer safePageSize = (pageSize == null
-            ? DEFAULT_PAGE_SIZE
-            : pageSize);
-        Integer safePageNumber = (pageNumber == null ? 1 : pageNumber);
 
-        String searchPattern = '%' + searchKey + '%';
-        Integer offset = (safePageNumber - 1) * safePageSize;
+        String likeString = '%' + searchKey + '%';
+        Integer offset = (pageNumber - 1) * pageSize;
+
+        /**Filtering Description only */
+        List<String> idList = new List<String>();
+        for(Course__c itr : [SELECT Id, Description__c FROM Course__c]){
+            if(itr.Description__c.containsIgnoreCase(searchKey)){
+                idList.add(itr.Id);
+            }
+        }
+        /**________________________ */
 
         PagedResult result = new PagedResult();
-            result.pageSize = safePageSize;
-            result.pageNumber = safePageNumber;
+            result.pageSize = pageSize;
+            result.pageNumber = pageNumber;
             result.totalItemCount = [
                 SELECT COUNT()
                 FROM Course__c
                 WHERE
-                    Name LIKE :searchPattern
-                    AND Price__c <= :safeMaxPrice
-        ];
-        result.records = [
-            SELECT
-                Id,
-                Name,
-                Hours__c,
-                Price__c,
-                Category__c,
-                IsActive__c,
-                Description__c
-            FROM Course__c
-            WHERE
-                Name LIKE :searchPattern
-                AND Price__c <= :safeMaxPrice
+                    Name LIKE :likeString OR Id IN : idList
+            ];
+        
+        
+            result.records = [
+                SELECT
+                    Id,
+                    Name,
+                    Hours__c,
+                    Price__c,
+                    Category__c,
+                    IsActive__c,
+                    Description__c
+                FROM Course__c
+                WHERE (Name LIKE : likeString) OR (Id IN : idList)
                 ORDER BY Price__c
-                LIMIT : safePageSize
+                LIMIT : pageSize
                 OFFSET : offset
-                
-        ];
+                        
+            ];
+        
         return result;
     }
+
+
+    @AuraEnabled(cacheable=true)
+    public static List<Sobject> getAllCustomers(){
+        try {
+            return [SELECT Name, Id from Contact];
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    
+    /**@AuraEnabled
+    public static List<sObject> getCourses(){
+        try {
+            return [
+                SELECT
+                    Id,
+                    Name,
+                    Hours__c,
+                    Price__c,
+                    Category__c,
+                    IsActive__c,
+                    Description__c
+                FROM Course__c
+            ];
+        } catch (QueryException e) {
+            return null;
+        }
+    } */
 }
 
-// WITH SECURITY_ENFORCED
-            
 
-
-/**FIND searchPattern IN ALL FIELDS RETURNING Course__c(   Name,
+/**FIND likeString IN ALL FIELDS RETURNING Course__c(   Name,
                                                                 Description__c, 
                                                                 Hours__c, 
                                                                 Price__c, 
@@ -74,7 +101,10 @@ public class courseraLwcController {
                                                                 IsActive__c 
                                                                 WHERE Price__c <= : safeMaxPrice
                                                                 ORDER BY Price__c
-                                                                LIMIT :safePageSize
+                                                                LIMIT :pageSize
                                                                 OFFSET :offset
                                                                 );
-        */
+                   
+
+FIND likeString IN ALL FIELDS RETURNING Course__c(Name,Description__c, Hours__c, Price__c, Category__c, IsActive__c WHERE IsActive__c =true LIMIT : safePageSize OFFSET : offset )
+*/

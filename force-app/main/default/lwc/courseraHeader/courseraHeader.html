@@ -1,0 +1,48 @@
+<template>
+
+    <div class="slds-grid custom-grid slds-p-top_large">
+        <div class="slds-size_1-of-3">
+            <lightning-combobox 
+                label="customer"  
+                variant = "label-hidden" 
+                class="slds-size_2-of-3 slds-align_absolute-center" 
+                options={customers} 
+                placeholder="Select a Contact" 
+                value={currCustomer} 
+                onchange={handleCustomerChange} >
+            </lightning-combobox>
+        </div>
+        <div class="slds-size_1-of-3">
+            <lightning-input 
+                variant = "label-hidden" 
+                type="text" 
+                placeholder="Search Text..." 
+                onfocus={handleSearchFocus} 
+                onchange={handleKeyChange}  
+                value={searchKey}>
+            </lightning-input>
+        </div>
+        <div class="slds-size_1-of-3">
+            <lightning-button 
+                variant="Brand" 
+                class="search-button" 
+                label="Search" 
+                icon-name="utility:search" 
+                icon-position="right" 
+                onclick={handleSearchClick}>
+            </lightning-button>
+            <lightning-button 
+                variant="Neutral" 
+                style={displayStyle} 
+                class="clear-button" 
+                label="Clear" 
+                icon-name="utility:close" 
+                icon-position="right" 
+                onclick={handleClearClick}>
+            </lightning-button>
+        </div>
+    </div>
+	
+	
+	
+</template>

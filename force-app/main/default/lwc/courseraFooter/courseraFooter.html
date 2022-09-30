@@ -1,0 +1,23 @@
+<template>
+    <div class="slds-grid slds-align_absolute-center slds-size_6-of-12  ">
+        <div class="slds-card slds-grid slds-size_6-of-12 slds-wrap custom-footer ">
+            <div class="slds-col ">
+                <span class="slds-text-heading_medium ">
+                    Added items : <span class="slds-text-heading_small" >{addeditems} </span> 
+                </span>
+            
+            </div>
+            <div class="slds-col ">
+                <span class="slds-text-heading_medium">
+                    Total Amount : <lightning-formatted-number class="slds-text-heading_small" value={totalamount} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                </span>
+                
+            </div>
+        </div>
+       
+        <div class="slds-col slds-size_3-of-12">
+            <span><lightning-button variant="Brand" class="xxx slds-button_stretch" label="Go to Cart" icon-name="utility:cart" icon-position="right" onclick={handleGotoCart}></lightning-button> </span>
+        </div>
+    </div>
+    
+</template>

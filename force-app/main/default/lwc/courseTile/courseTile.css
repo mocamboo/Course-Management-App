@@ -1,4 +1,20 @@
-.coursetile{
-	border: 3px solid red;
-	height: 200px;
+.tile-class{
+	height: 100px;
+}
+
+.blue-icon{
+	--lwc-colorTextIconDefault: #0176d3;
+}
+
+.tile-text{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+   	-webkit-line-clamp: 5; /* number of lines to show */
+           line-clamp: 5; 
+   	-webkit-box-orient: vertical;
+}
+
+.tile-footer{
+	
 }

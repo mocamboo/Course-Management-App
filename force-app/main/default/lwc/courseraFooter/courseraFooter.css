@@ -1,0 +1,15 @@
+.xxx{
+    border: 2px solid red;
+}
+.custom-footer{
+    height: 3rem;
+    vertical-align: middle;
+}
+.custom-footer>div{
+    padding-top: 10px;
+    /* border: 2px solid black; */
+}
+.custom-footer>:first-child>span{
+    padding-left: 10px;
+}
+

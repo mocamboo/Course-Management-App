@@ -1,7 +1,10 @@
 .myclass{
 	background: transparent;
+	border: 0;
+	/* box-shadow: none; */
 }
-
-.yclass{
-	background: #fff;
-}
+ .course-tile{
+	border: none;
+	box-shadow: none;
+	
+} 

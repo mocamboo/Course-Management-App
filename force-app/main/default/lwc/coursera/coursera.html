@@ -1,3 +1,14 @@
 <template>
-
+    <template if:false={showcart}>
+        <c-coursera-header></c-coursera-header>
+        <c-course-tiles-list ongotocart={handleGotocart}></c-course-tiles-list>
+    </template>
+    
+    <template if:true={showcart}>
+        <c-coursera-cart courses={courses}></c-coursera-cart>
+    </template>
+        
+    
 </template>
+
+
