@@ -174,7 +174,6 @@ export default class CourseTilesList extends NavigationMixin(
             (message) => {
                 this.handleCustomerChange(message);
             }
-
         );
     }
 
