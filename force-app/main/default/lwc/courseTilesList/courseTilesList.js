@@ -106,9 +106,7 @@ export default class CourseTilesList extends NavigationMixin(
         }
     }
 
-    handleNoCustomer() {
-        // Show Toast Event
-    }
+
     handleCheckAdd(event) {
         const course_tocheck = event.detail;
         const isExist = this.check_inCart('Id', course_tocheck.Id);
@@ -147,7 +145,7 @@ export default class CourseTilesList extends NavigationMixin(
         })
         // this.template.querySelector(`[data-id="${course_toremove.Id}"]`).enableButton();
     }
-    handleSearchkeyChange(changes) {
+    updateCustomer(changes) {
         this.searchKey = changes.newSearchkey;
         this.pageNumber = 1;
     }
@@ -165,7 +163,7 @@ export default class CourseTilesList extends NavigationMixin(
             this.messageContext,
             SEARCHKEY_CHANNEL,
             (message) => {
-                this.handleSearchkeyChange(message);
+                this.updateCustomer(message);
             }
         );
         this.subscription2 = subscribe(
