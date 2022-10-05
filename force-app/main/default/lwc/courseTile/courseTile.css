@@ -4,6 +4,7 @@
 
 .blue-icon{
 	--lwc-colorTextIconDefault: #0176d3;
+	cursor: pointer;
 }
 
 .tile-text{

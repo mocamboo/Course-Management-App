@@ -1,11 +1,12 @@
 <template>
     <template if:false={showcart}>
+        <lightning-card icon-name="utility:home"  title="Home"></lightning-card>
         <c-coursera-header></c-coursera-header>
         <c-course-tiles-list ongotocart={handleGotocart}></c-course-tiles-list>
     </template>
     
     <template if:true={showcart}>
-        <c-coursera-cart courses={courses}></c-coursera-cart>
+        <c-coursera-cart courses={customCourses}></c-coursera-cart>
     </template>
         
     

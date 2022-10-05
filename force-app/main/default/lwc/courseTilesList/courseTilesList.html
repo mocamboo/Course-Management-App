@@ -1,7 +1,7 @@
 <template>
 	
 	<template if:true={result} >
-		<div class="slds-card slds-grid slds-wrap myclass">
+		<div class="slds-card slds-grid slds-wrap myclass slds-p-top_large">
 			<template for:each={courses} for:item="course">
 				<c-course-tile 
 					key={course.Id}
@@ -25,8 +25,9 @@
 	</template>
 	<c-coursera-footer 
 		ongotocart={handleGotoCart} 
-		addeditems={addedItems} 
+		addeditems={addedItems}  
 		totalamount={totalPrice} 
-		class=" slds-align_absolute-center">
+		class=" slds-align_absolute-center slds-p-bottom_xx-large">
 	</c-coursera-footer>
+	
 </template>

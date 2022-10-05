@@ -17,6 +17,7 @@ public class courseraLwcController {
         Integer pageSize,
         Integer pageNumber
     ) {
+        
 
         String likeString = '%' + searchKey + '%';
         Integer offset = (pageNumber - 1) * pageSize;
@@ -38,6 +39,7 @@ public class courseraLwcController {
                 FROM Course__c
                 WHERE
                     Name LIKE :likeString OR Id IN : idList
+                WITH SECURITY_ENFORCED
             ];
         
         
@@ -52,6 +54,7 @@ public class courseraLwcController {
                     Description__c
                 FROM Course__c
                 WHERE (Name LIKE : likeString) OR (Id IN : idList)
+                WITH SECURITY_ENFORCED
                 ORDER BY Price__c
                 LIMIT : pageSize
                 OFFSET : offset
@@ -72,25 +75,32 @@ public class courseraLwcController {
     }
 
     
-    /**@AuraEnabled
-    public static List<sObject> getCourses(){
-        try {
-            return [
-                SELECT
-                    Id,
-                    Name,
-                    Hours__c,
-                    Price__c,
-                    Category__c,
-                    IsActive__c,
-                    Description__c
-                FROM Course__c
-            ];
-        } catch (QueryException e) {
-            return null;
-        }
-    } */
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /**FIND likeString IN ALL FIELDS RETURNING Course__c(   Name,

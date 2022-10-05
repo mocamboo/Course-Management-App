@@ -1,6 +1,6 @@
 import { LightningElement, wire, track } from 'lwc';
 import getPagedCourseList from '@salesforce/apex/courseraLwcController.getPagedCourseList';
-import getCourses from '@salesforce/apex/courseraLwcController.getCourses';
+
 import {
     publish,
     subscribe,
@@ -55,14 +55,14 @@ export default class CourseTilesList extends NavigationMixin(
 
     get courses() {
         return this.records.map((obj) => {
-            console.log('triggered');
+            // console.log('triggered');
             return this.check_inCart('Id', obj.Id) ? { ...obj, isAdded: true } : { ...obj, isAdded: false };
         });
     }
     get addedItems() {
-        console.log(this.cart_items.length);
         return this.cart_items.length;
     }
+
     get totalPrice() {
         let total = 0;
         this.cart_items.forEach((ele) => {
@@ -145,17 +145,12 @@ export default class CourseTilesList extends NavigationMixin(
         })
         // this.template.querySelector(`[data-id="${course_toremove.Id}"]`).enableButton();
     }
-    updateCustomer(changes) {
-        this.searchKey = changes.newSearchkey;
+    updateSearchkey(message) {
+        this.searchKey = message.newSearchkey;
         this.pageNumber = 1;
     }
-    handleCustomerChange(changes) {
-        try {
-            this.currCustomer = changes.newCustomer;
-        }
-        catch (err) {
-            console.log(err.message);
-        }
+    updateCustomer(message) {
+        this.currCustomer = message.newCustomer;
     }
 
     subscribetoLMS() {
@@ -163,19 +158,31 @@ export default class CourseTilesList extends NavigationMixin(
             this.messageContext,
             SEARCHKEY_CHANNEL,
             (message) => {
-                this.updateCustomer(message);
+                this.updateSearchkey(message);
             }
         );
         this.subscription2 = subscribe(
             this.messageContext,
             CUSTOMER_CHANNEL,
             (message) => {
-                this.handleCustomerChange(message);
+                this.updateCustomer(message);
             }
         );
     }
 
+    check_inCart(attr, value) {
+        let arr = [...this.cart_items];
+        var i = arr.length;
+        while (i--) {
+            if (arr[i]
+                && arr[i].hasOwnProperty(attr)
+                && (arguments.length = 2 && arr[i][attr] === value)) {
+                return true;
 
+            }
+        }
+        return false;
+    }
     navigateTo() {
         this[NavigationMixin.Navigate]({
             type: "standard__component",
@@ -187,23 +194,5 @@ export default class CourseTilesList extends NavigationMixin(
                 customer: this.currCustomer
             }
         });
-    }
-
-
-    check_inCart(attr, value) {
-        let arr = [...this.cart_items];
-
-        var i = arr.length;
-        while (i--) {
-            if (arr[i]
-                && arr[i].hasOwnProperty(attr)
-                && (arguments.length = 2 && arr[i][attr] === value)) {
-                console.log('item in the cart');
-                return true;
-
-            }
-        }
-        console.log('item NOT in the cart');
-        return false;
     }
 }
