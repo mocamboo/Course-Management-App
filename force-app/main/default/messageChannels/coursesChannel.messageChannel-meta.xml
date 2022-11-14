@@ -3,7 +3,7 @@
     <description>Message Channel to pass filter key and contact selected</description>
     <isExposed>true</isExposed>
     <lightningMessageFields>
-        <fieldName>contactSelected</fieldName>
+        <fieldName>coursesInCart</fieldName>
     </lightningMessageFields>
-    <masterLabel>FilterChange</masterLabel>
+    <masterLabel>courses</masterLabel>
 </LightningMessageChannel>

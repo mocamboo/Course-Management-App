@@ -1,3 +1,16 @@
 .dummy{
 	color : black;
 }
+.pagination-info{
+	
+	margin-inline: 2rem;
+}
+.nav-index > *{
+	border: none;
+	background-color: #ffffff;
+}
+
+.nav-index:where(:not(:first-child)) {
+  padding-left: 1rem;
+  
+}

@@ -1,42 +1,60 @@
 <template>
-    <lightning-card icon-name="utility:cart"  title="Cart">
-    </lightning-card>
-    <lightning-card class="cart-table slds-m-top_x-large" >
-        <!-- loader -->
-        <div if:true={showSpinner}>
-            <lightning-spinner
+        <!-- spinner -->
+        <div if:true={showSpinner} >
+            <lightning-spinner class="backgroundInverse"
                 alternative-text="Loading..." variant="brand">
             </lightning-spinner>
         </div>
-        <!-----/loader-------->
-        <div class="slds-var-p-around_small">
-            <template if:true={tabledata}>
-                <c-custom-datatable-type
-                    key-field="id2"
-                    data={tabledata}
-                    columns={columns}
-                    onrowaction={handleRowAction}
-                    onpicklistchanged={picklistChanged} 
-                    onvalueselect={handleSelection}
-                    draft-values={draftValues} 
-                    oncellchange={handleCellChange}
-                    onsave={handleSave}
-                    oncancel={handleCancel}
-                    hide-checkbox-column>
-                </c-custom-datatable-type>
-            </template>
-        </div>
-    </lightning-card>
+        <!-----/spinner-------->
+        <div if:false={showSpinner}>
+           
+            <lightning-card 
+                icon-name="utility:cart"  title="e-Learning Course Management">
+            </lightning-card>
+            <lightning-card class="cart-table slds-m-top_x-large" >
+                <div class="slds-var-p-around_small">
+                    <template if:true={tabledata}>
+                        <c-custom-datatable-type
+                        column-widths-mode="auto"
+                            key-field="id2"
+                            data={tabledata}
+                            columns={columns}
+                            onrowaction={handleRowAction}
+                            onpicklistchanged={picklistChanged} 
+                            onvalueselect={handleSelection}
+                            
+                            oncellchange={handleCellChange}
+                            onsave={handleSave}
+                            oncancel={handleCancel}
+                            hide-checkbox-column>
+                        </c-custom-datatable-type>
+                    </template>
+                </div>
+            </lightning-card>
 
-    <div class="slds-size_6-of-12 slds-box slds-m-top_x-large slds-align_absolute-center" >
-        <div class="slds-text-heading_medium  slds-size_2-of-3 slds-align_absolute-center">
-            <span class="slds-size_1-of-2">Courses Selected : {itemsCount}</span>
-            <span class="slds-size_1-of-2">Total Price : {totalAmount}</span>
+            <div class="slds-size_6-of-12 slds-box slds-m-top_x-large slds-m-bottom_x-large slds-align_absolute-center course-footer" >
+                <div class="slds-text-heading_medium  slds-size_2-of-3 slds-align_absolute-center">
+                    <span class="slds-size_1-of-2">Courses Selected : {itemsCount}</span>
+                    <span class="slds-size_1-of-2">Total Price : {totalAmount}</span>
+                </div>
+                <div class="slds-size_1-of-3 slds-align_absolute-center ">
+                    <lightning-button 
+                        variant="Success"  
+                        label="Confirm Order"  
+                        onclick={handleConfirmation}>
+                    </lightning-button>
+                </div>
+            </div>
+             <!-- <div class="slds-card slds-p-around_small">
+                <lightning-button 
+                    
+                    variant="Brand"  
+                    label="Back"  
+                    onclick={handleBack}>
+                </lightning-button>
+            </div> -->
         </div>
-        <div class="  slds-size_1-of-3 slds-align_absolute-center">
-            <lightning-button variant="Success"  label="Confirm Order"  onclick={handleConfirmation}></lightning-button>
-        </div>
-    </div>
+
+    
 
 </template>
-

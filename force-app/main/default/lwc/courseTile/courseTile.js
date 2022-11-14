@@ -27,4 +27,3 @@ export default class CourseTile extends LightningElement {
         // this.isDisabled = this.course.isAdded;
     }
 }
-

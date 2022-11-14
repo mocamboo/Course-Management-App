@@ -1,165 +1,160 @@
-import { LightningElement, track, wire } from 'lwc';
-import fetchAccounts from '@salesforce/apex/AccountDataController.fetchAccounts';
+import {LightningElement, track, wire} from 'lwc';
+import fetchAccounts
+  from '@salesforce/apex/AccountDataController.fetchAccounts';
 import ACCOUNT_OBJECT from '@salesforce/schema/Account';
 import TYPE_FIELD from '@salesforce/schema/Account.Type';
-import { updateRecord } from 'lightning/uiRecordApi';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { refreshApex } from '@salesforce/apex';
-import { getPicklistValues, getObjectInfo } from 'lightning/uiObjectInfoApi';
+import {updateRecord} from 'lightning/uiRecordApi';
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+import {refreshApex} from '@salesforce/apex';
+import {getPicklistValues, getObjectInfo} from 'lightning/uiObjectInfoApi';
 
 const columns = [
-    { label: 'Name', fieldName: 'Name', editable: true },
-    { label: 'Phone', fieldName: 'Phone', type: 'phone', editable: true },
-    {
-        label: 'Type', fieldName: 'Type', type: 'picklistColumn', editable: false,
-        typeAttributes: {
-            placeholder: 'Choose Type',
-            options: { fieldName: 'pickListOptions' },
-            value: { fieldName: 'Type' }, // default value for picklist,
-            context: { fieldName: 'Id' } // binding account Id with context variable to be returned back
-        }
-    }
-]
+  {label: 'Name', fieldName: 'Name', editable: true},
+  {label: 'Phone', fieldName: 'Phone', type: 'phone', editable: true},
+  {
+    label: 'Type',
+    fieldName: 'Type',
+    type: 'picklistColumn',
+    editable: false,
+    typeAttributes: {
+      placeholder: 'Choose Type',
+      options: {fieldName: 'pickListOptions'},
+      value: {fieldName: 'Type'}, // default value for picklist,
+      context: {fieldName: 'Id'}, // binding account Id with context variable to be returned back
+    },
+  },
+];
 
 export default class CustomDatatableDemo extends LightningElement {
-    columns = columns;
-    showSpinner = false;
-    @track data = [];
-    @track accountData;
-    @track draftValues = [];
-    lastSavedData = [];
-    @track pickListOptions;
+  columns = columns;
+  showSpinner = false;
+  @track data = [];
+  @track accountData;
+  @track draftValues = [];
+  lastSavedData = [];
+  @track pickListOptions;
 
-    @wire(getObjectInfo, { objectApiName: ACCOUNT_OBJECT })
-    objectInfo;
+  //here I pass picklist option so that this wire method call after above method
+  @wire (fetchAccounts, {pickList: '$pickListOptions'})
+  accountData (result) {
+    this.accountData = result;
+    if (result.data) {
+      this.data = JSON.parse (JSON.stringify (result.data));
 
-    //fetch picklist options
-    @wire(getPicklistValues, {
-        recordTypeId: "$objectInfo.data.defaultRecordTypeId",
-        fieldApiName: TYPE_FIELD
-    })
+      this.data.forEach (ele => {
+        ele.pickListOptions = this.pickListOptions;
+      });
 
-    wirePickList({ error, data }) {
-        if (data) {
-            this.pickListOptions = data.values;
-        } else if (error) {
-            console.log(error);
+      this.lastSavedData = JSON.parse (JSON.stringify (this.data));
+    } else if (result.error) {
+      this.data = undefined;
+    }
+  }
+
+  updateDataValues (updateItem) {
+    let copyData = JSON.parse (JSON.stringify (this.data));
+
+    copyData.forEach (item => {
+      if (item.Id === updateItem.Id) {
+        for (let field in updateItem) {
+          item[field] = updateItem[field];
         }
-    }
+      }
+    });
 
-    //here I pass picklist option so that this wire method call after above method
-    @wire(fetchAccounts, { pickList: '$pickListOptions' })
-    accountData(result) {
-        this.accountData = result;
-        if (result.data) {
-            this.data = JSON.parse(JSON.stringify(result.data));
+    //write changes back to original data
+    this.data = [...copyData];
+  }
 
-            this.data.forEach(ele => {
-                ele.pickListOptions = this.pickListOptions;
-            })
+  updateDraftValues (updateItem) {
+    let draftValueChanged = false;
+    let copyDraftValues = [...this.draftValues];
 
-            this.lastSavedData = JSON.parse(JSON.stringify(this.data));
-
-        } else if (result.error) {
-            this.data = undefined;
+    //store changed value to do operations
+    //on save. This will enable inline editing &
+    //show standard cancel & save button
+    copyDraftValues.forEach (item => {
+      if (item.Id === updateItem.Id) {
+        console.log ('hiiii', updateItem);
+        for (let field in updateItem) {
+          item[field] = updateItem[field];
         }
-    };
+        draftValueChanged = true;
+      }
+    });
 
-    updateDataValues(updateItem) {
-        let copyData = JSON.parse(JSON.stringify(this.data));
-
-        copyData.forEach(item => {
-            if (item.Id === updateItem.Id) {
-                for (let field in updateItem) {
-                    item[field] = updateItem[field];
-                }
-            }
-        });
-
-        //write changes back to original data
-        this.data = [...copyData];
+    if (draftValueChanged) {
+      this.draftValues = [...copyDraftValues];
+    } else {
+      this.draftValues = [...copyDraftValues, updateItem];
     }
+  }
 
-    updateDraftValues(updateItem) {
-        let draftValueChanged = false;
-        let copyDraftValues = [...this.draftValues];
+  picklistChanged (event) {
+    event.stopPropagation ();
+    let dataRecieved = event.detail.data;
+    let updatedItem = {Id: dataRecieved.context, Type: dataRecieved.value};
+    this.updateDraftValues (updatedItem);
+    this.updateDataValues (updatedItem);
+  }
 
-        //store changed value to do operations
-        //on save. This will enable inline editing &
-        //show standard cancel & save button
-        copyDraftValues.forEach(item => {
-            if (item.Id === updateItem.Id) {
-                console.log('hiiii', updateItem);
-                for (let field in updateItem) {
-                    item[field] = updateItem[field];
-                }
-                draftValueChanged = true;
-            }
-        });
+  //handler to handle cell changes & update values in draft values
+  handleCellChange (event) {
+    this.updateDraftValues (event.detail.draftValues[0]);
+  }
 
-        if (draftValueChanged) {
-            this.draftValues = [...copyDraftValues];
-        } else {
-            this.draftValues = [...copyDraftValues, updateItem];
-        }
-    }
+  handleSave (event) {
+    this.showSpinner = true;
+    const saveDraftValues = this.draftValues;
 
-    picklistChanged(event) {
-        event.stopPropagation();
-        let dataRecieved = event.detail.data;
-        let updatedItem = { Id: dataRecieved.context, Type: dataRecieved.value };
-        this.updateDraftValues(updatedItem);
-        this.updateDataValues(updatedItem);
-    }
+    const recordInputs = saveDraftValues.slice ().map (draft => {
+      const fields = Object.assign ({}, draft);
+      return {fields};
+    });
 
-    //handler to handle cell changes & update values in draft values
-    handleCellChange(event) {
-        this.updateDraftValues(event.detail.draftValues[0]);
-    }
-
-    handleSave(event) {
-
-        this.showSpinner = true;
-        const saveDraftValues = this.draftValues;
-
-        const recordInputs = saveDraftValues.slice().map(draft => {
-            const fields = Object.assign({}, draft);
-            return { fields };
-        });
-
-        // Updating the records using the UiRecordAPi
-        const promises = recordInputs.map(recordInput => updateRecord(recordInput));
-        Promise.all(promises).then(res => {
-            this.showToast('Success', 'Records Updated Successfully!', 'success', 'dismissable');
-            this.draftValues = [];
-            return this.refresh();
-        }).catch(error => {
-            console.log(error);
-            this.showToast('Error', 'An Error Occured!!', 'error', 'dismissable');
-        }).finally(() => {
-            this.draftValues = [];
-            this.showSpinner = false;
-        });
-    }
-
-    handleCancel(event) {
-        //remove draftValues & revert data changes
-        this.data = JSON.parse(JSON.stringify(this.lastSavedData));
+    // Updating the records using the UiRecordAPi
+    const promises = recordInputs.map (recordInput =>
+      updateRecord (recordInput)
+    );
+    Promise.all (promises)
+      .then (res => {
+        this.showToast (
+          'Success',
+          'Records Updated Successfully!',
+          'success',
+          'dismissable'
+        );
         this.draftValues = [];
-    }
+        return this.refresh ();
+      })
+      .catch (error => {
+        console.log (error);
+        this.showToast ('Error', 'An Error Occured!!', 'error', 'dismissable');
+      })
+      .finally (() => {
+        this.draftValues = [];
+        this.showSpinner = false;
+      });
+  }
 
-    showToast(title, message, variant, mode) {
-        const evt = new ShowToastEvent({
-            title: title,
-            message: message,
-            variant: variant,
-            mode: mode
-        });
-        this.dispatchEvent(evt);
-    }
+  handleCancel (event) {
+    //remove draftValues & revert data changes
+    this.data = JSON.parse (JSON.stringify (this.lastSavedData));
+    this.draftValues = [];
+  }
 
-    // This function is used to refresh the table once data updated
-    async refresh() {
-        await refreshApex(this.accountData);
-    }
+  showToast (title, message, variant, mode) {
+    const evt = new ShowToastEvent ({
+      title: title,
+      message: message,
+      variant: variant,
+      mode: mode,
+    });
+    this.dispatchEvent (evt);
+  }
+
+  // This function is used to refresh the table once data updated
+  async refresh () {
+    await refreshApex (this.accountData);
+  }
 }

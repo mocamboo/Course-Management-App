@@ -12,4 +12,6 @@
 .custom-footer>:first-child>span{
     padding-left: 10px;
 }
-
+.course-footer{
+    background-color: white;
+}

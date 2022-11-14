@@ -1,7 +1,8 @@
 <template>
 
     <div class="slds-grid custom-grid slds-p-top_large">
-        <div class="slds-size_1-of-3">
+        <div class="slds-size_1-of-3 parent">
+            
             <lightning-combobox 
                 label="customer"  
                 variant = "label-hidden" 
@@ -17,8 +18,8 @@
                 variant = "label-hidden" 
                 type="text" 
                 placeholder="Search Text..." 
-                onfocus={handleSearchFocus} 
                 onchange={handleKeyChange}  
+                onsubmit={handleSearchClick}
                 value={searchKey}>
             </lightning-input>
         </div>

@@ -1,15 +1,11 @@
 <template>
     <template if:false={showcart}>
-        <lightning-card icon-name="utility:home"  title="Home"></lightning-card>
+        <lightning-card icon-name="utility:home"  title="e-Learning Course Management"></lightning-card>
         <c-coursera-header></c-coursera-header>
-        <c-course-tiles-list ongotocart={handleGotocart}></c-course-tiles-list>
+        <c-course-tiles-list pagesize={pageSize} ongotocart={handleGotocart} ></c-course-tiles-list>
     </template>
-    
     <template if:true={showcart}>
-        <c-coursera-cart courses={customCourses}></c-coursera-cart>
+        <c-coursera-cart ongotohome={handleGotoHome} courses={customCourses}></c-coursera-cart>
     </template>
-        
     
 </template>
-
-

@@ -1,4 +1,8 @@
 .search-button{
     padding-left: 4rem;
 }
-
+.btnIconOverlay {
+    position: absolute;
+    z-index: 1;
+    margin: 0.5% 0 0 92%;
+}

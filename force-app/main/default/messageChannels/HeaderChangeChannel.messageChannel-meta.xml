@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
-    <masterLabel>FilterChange</masterLabel>
+    <description>Message Channel to pass filter key and contact selected</description>
     <isExposed>true</isExposed>
-    <description>Message Channel to pass filter key and contact selected </description>
-     <lightningMessageFields>
+    <lightningMessageFields>
         <fieldName>filterKey</fieldName>
     </lightningMessageFields>
+    <masterLabel>FilterChange</masterLabel>
 </LightningMessageChannel>

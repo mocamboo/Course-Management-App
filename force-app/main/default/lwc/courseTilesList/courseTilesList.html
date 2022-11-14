@@ -1,33 +1,38 @@
 <template>
-	
-	<template if:true={result} >
-		<div class="slds-card slds-grid slds-wrap myclass slds-p-top_large">
-			<template for:each={courses} for:item="course">
-				<c-course-tile 
-					key={course.Id}
-					course={course}
-					onaddcourse={handleCourseAdd} 
-					ondeletecourse={handleCourseDelete} 
-					oncheckadd={handleCheckAdd} 
-					isdisabled={course.isAdded} 
-					data-id={course.Id}  
-					class="slds-col slds-size_4-of-12 slds-align_absolute-center slds-box course-tile">
-				</c-course-tile>
-			</template>
-		</div>
-		<c-paginator 
-			page-number={pageNumber} 
-			page-size={pageSize} 
-			total-item-count={result.totalItemCount}
-			onprevious={handlePreviousPage} 
-			onnext={handleNextPage}>
-		</c-paginator>
-	</template>
-	<c-coursera-footer 
-		ongotocart={handleGotoCart} 
-		addeditems={addedItems}  
-		totalamount={totalPrice} 
-		class=" slds-align_absolute-center slds-p-bottom_xx-large">
-	</c-coursera-footer>
-	
+	<div if:true={isSpinner} >
+        <lightning-spinner class="backgroundInverse"
+            alternative-text="Loading..." variant="brand">
+        </lightning-spinner>
+    </div>
+	<div if:false={isSpinner} >
+		<template if:true={result} >
+			<div class="slds-card slds-grid slds-wrap myclass slds-p-top_large">
+				<template for:each={courses} for:item="course">
+					<c-course-tile 
+						key={course.Id}
+						course={course}
+						onaddcourse={handleCourseAdd} 
+						ondeletecourse={handleCourseDelete} 
+						oncheckadd={handleCheckAdd} 
+						isdisabled={course.isAdded} 
+						data-id={course.Id}  
+						class="slds-col slds-size_4-of-12 slds-align_absolute-center slds-box course-tile">
+					</c-course-tile>
+				</template>
+			</div>
+			<c-paginator 
+				page-number={pageNumber} 
+				page-size={pagesize} 
+				total-item-count={result.totalItemCount}
+				onprevious={handlePreviousPage} 
+				onnext={handleNextPage}>
+			</c-paginator>
+		</template>
+		<c-coursera-footer 
+			ongotocart={handleGotoCart} 
+			addeditems={addedItems}  
+			totalamount={totalPrice} 
+			class=" slds-align_absolute-center slds-p-bottom_xx-large">
+		</c-coursera-footer>
+	</div>
 </template>

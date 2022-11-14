@@ -1,36 +1,41 @@
-import { LightningElement, api } from 'lwc';
+import {LightningElement, api} from 'lwc';
 
 export default class Paginator extends LightningElement {
-    /** The current page number. */
-    @api pageNumber;
+  /** The current page number. */
+  @api pageNumber;
 
-    /** The number of items on a page. */
-    @api pageSize;
+  /** The number of items on a page. */
+  @api pageSize;
 
-    /** The total number of items in the list. */
-    @api totalItemCount;
+  /** The total number of items in the query. */
+  @api totalItemCount;
 
-    handlePrevious() {
-        this.dispatchEvent(new CustomEvent('previous'));
-    }
+  get pages () {
+    const totalPages = Math.ceil (this.totalItemCount / this.pageSize);
+    return [...Array (totalPages).keys ()];
+  }
 
-    handleNext() {
-        this.dispatchEvent(new CustomEvent('next'));
-    }
+  handlePrevious () {
+    this.dispatchEvent (new CustomEvent ('previous'));
+  }
 
-    get currentPageNumber() {
-        return this.totalItemCount === 0 ? 0 : this.pageNumber;
-    }
+  handleNext () {
+    this.dispatchEvent (new CustomEvent ('next'));
+  }
 
-    get isFirstPage() {
-        return this.pageNumber === 1;
-    }
+  get currentPageNumber () {
+    return this.totalItemCount === 0 ? 0 : this.pageNumber;
+  }
 
-    get isLastPage() {
-        return this.pageNumber >= this.totalPages;
-    }
+  get isFirstPage () {
+    return this.pageNumber === 1;
+  }
 
-    get totalPages() {
-        return Math.ceil(this.totalItemCount / this.pageSize);
-    }
+  get isLastPage () {
+    return this.pageNumber >= this.totalPages;
+  }
+
+  get totalPages () {
+    return Math.ceil (this.totalItemCount / this.pageSize);
+  }
 }

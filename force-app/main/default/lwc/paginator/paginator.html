@@ -1,6 +1,6 @@
 <template>
-    <lightning-layout vertical-align="center" class="slds-var-m-top_x-small">
-        <lightning-layout-item size="2">
+    <lightning-layout vertical-align="center" class=" slds-grid slds-var-m-top_x-small slds-align_absolute-center">
+        <lightning-layout-item  >
             <template if:false={isFirstPage}>
                 <lightning-button
                     variant="brand"
@@ -11,13 +11,42 @@
                 >
                 </lightning-button>
             </template>
+            <template if:true={isFirstPage}>
+                <lightning-button style="visibility: hidden;"
+                    variant="brand"
+                    class="left-button-icon"
+                    icon-name="utility:chevronleft"
+                    onclick={handlePrevious}
+                    label="Previus"
+                >
+                </lightning-button>
+            </template>
         </lightning-layout-item>
-        <lightning-layout-item size="8" class="nav-info slds-text-align_center">
-            {totalItemCount} items • Page {currentPageNumber} of {totalPages}
+        <lightning-layout-item  class="nav-info slds-text-align_center pagination-info">
+            <div>{totalItemCount} items • Page {currentPageNumber} of {totalPages}</div>
+            <!-- <div>
+                <template for:each={pages} for:item="page">
+                    <span key={page} class="nav-index">
+                        <button onclick={handlePageClick} >{page}</button>
+                    </span>
+                </template>
+                
+            </div> -->
+            
         </lightning-layout-item>
-        <lightning-layout-item size="2" class="nav-next slds-text-align_right">
+        <lightning-layout-item  class="nav-next slds-text-align_right">
             <template if:false={isLastPage}>
                 <lightning-button
+                    variant="brand"
+                    class="right-button-icon"
+                    icon-name="utility:chevronright"
+                    onclick={handleNext}
+                    label="Next"
+                >
+                </lightning-button>
+            </template>
+            <template if:true={isLastPage}>
+                <lightning-button style="visibility:hidden"
                     variant="brand"
                     class="right-button-icon"
                     icon-name="utility:chevronright"
